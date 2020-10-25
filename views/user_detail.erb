@@ -1,0 +1,37 @@
+<% user = User.findDetail(params[:uid])[0] %>
+<main>
+  <% if params[:uid].to_i == session[:user][:id].to_i %>
+    <a href="/update_profile?uid=<%= params[:uid] %>">Update profile</a>
+  <% end %>
+    <div id="detail1">
+      <h1>My Profile</h1>
+      <h2>Name:</h2>
+      <p><%= user[:firstname] + " " + user[:lastname] %></p> 
+    </div>
+    <div id="detail2">
+      <h2>Department:</h2>
+      <p><%= user[:department] %></p> 
+      <h2>Email:</h2>
+      <p><%= user[:email] %></p> 
+    </div>
+    <div id="detail3">
+      <br>
+      <hr>
+      <h1>My Bookmarks:</h1>
+      <table>
+        <tr>
+          <th>Title</th>
+          <th>Date created</th>
+        </tr>
+        <% bookmarks = Bookmark.selectUserBookmark(params[:uid]) %> 
+        <% if not bookmarks.nil? %>
+          <% bookmarks.each do |bookmark| %>
+          <tr>
+          <td><a href="/details?id=<%=bookmark[:id]%>"><%= bookmark[:title] %></a></td>
+          <td><%= bookmark[:date_created] %></td>
+          </tr>
+        <% end %>
+        <% end %>
+      </table>
+    </div>
+</main>

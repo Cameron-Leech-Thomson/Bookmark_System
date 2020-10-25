@@ -1,0 +1,41 @@
+<% require_relative '../models/bookmarks.rb' %>
+<% # Get previous info %>
+
+<main>
+  <h1>Update Bookmark</h1>
+  <form action="/update_bookmark?id=<%=params[:id]%>" method="post" class="adding_bookmark">
+    <label for="title">Title:</label>
+    <input type="text" id="title" name="title" value="<%= @bookmark[:title] %>">
+    <label for="description">Description:</label>
+    <input type="text" id="description" name="description" value="<%=@bookmark[:description]%>">
+    <label for="url">URL:</label>
+    <input type="url" id="url" name="url" value="http://<%=@bookmark[:url]%>">
+    <label for="tags">Tags:</label>
+    <% tags = Tag.findRelatedTags(params[:id]) %>
+    <input name="tags" id="tags" type="hidden">
+    <input name="createTags" id="createTags" type="hidden">
+    <div id="tagArea">
+    <% if tags.length != 0 %>
+      <% tags.each do |tag| %>
+        <div class="tags" style="background-color: rgb(<%= rand(60) + 180 %>,<%= rand(60) + 180 %>,<%= rand(60) + 180 %>);"><%= Tag.findName(tag) %></div>
+      <% end %>
+    <% end %>
+    </div>
+    <input placeholder="Type to search or create a new tag:" id="input" oninput="searchTag()">
+    <% # get all the tags %>
+    <% tags = Tag.all() %>
+        <ul id="tagsList">
+    <% if tags.length != 0 %>
+      <% tags.each do | tag | %>
+        <li onclick="addTag(<%= tag[:id] %>,'<%= tag[:name] %>')"><div><%= tag[:name] %></div></li>
+      <% end %>
+        </ul>
+    <% end %>
+
+    <label>Private</label>
+    <input type="checkbox" name="pub" value="0" <%= @bookmark[:public].to_i == 0?"checked":""%>>
+    <input type="submit" class="button4" id="add_bookmarks">  
+  </form>
+  <p><%= @message %></p>
+</main>
+<script src="/scripts/tag.js"></script>

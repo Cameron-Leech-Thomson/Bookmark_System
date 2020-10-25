@@ -1,0 +1,61 @@
+<% require_relative '../models/bookmarks.rb' %>
+<% require_relative '../models/user.rb' %>
+
+<main>
+  <table>
+    <tr>
+      <th>User ID</th>
+      <th>First Name</th>
+      <th>Last Name</th>
+      <th>Date Joined</th>
+      <th>Email </th>
+      <th>Suspended?</th>
+    </tr>
+    <% page = params[:page].nil? ? 1 : params[:page].to_i # get the current page
+    users = User.selectAll(page) %>
+  <% if not users.nil? %>
+    <% users.each do |user| %>
+      <tr>
+        <td><%= user[:user_id]%></td>
+        <td><%= user[:firstname]%></td>
+        <td><%= user[:lastname]%></td>
+        <td><%= user[:date_joined]%></td>
+          <td><a href="/update_profile?uid=<%=user[:user_id]%>"><%= User.findEmail(user[:user_id])[0][:email]%></a></td>
+        <td><% if user[:suspended] != 1 %>
+              No
+            <% else %>
+              Yes
+            <% end %>
+            </td>
+      </tr>
+    <% end %>
+  <% end %>
+  </table>
+    
+  <% # Get the total number of pages %>
+  <% totalPages = (User.countUser/20).ceil %>
+  <ul class="page_counter">
+    <% if page != 1 %>
+      <li><a href="/">&laquo;</a></li>
+      <li><a href="/?page=<%= page-1 %>">&lsaquo;</a></li>
+    <% end %>
+    <% if page >= 3 %>
+      <li><a href="/?page=<%= page-2 %>"><%= page-2 %></a></li>
+    <% end %>
+    <% if page >=2 %>
+      <li><a href="/?page=<%= page-1 %>"><%= page-1 %></a></li>
+    <% end %>
+    <li id="current"><a href="#"><%= page %></a></li>
+    <% if totalPages - page >= 1 %>
+      <li><a href="/?page=<%= page+1 %>"><%= page+1 %></a></li>
+    <% end %>
+    <% if totalPages - page >= 2 %>
+      <li><a href="/?page=<%= page+2 %>"><%= page+2 %></a></li>
+    <% end %>
+    <% if totalPages - page >= 1 %>
+      <li><a href="/?page=<%= page+1 %>">&rsaquo;</a></li>
+      <li><a href="/?page=<%= totalPages %>">&raquo;</a></li>
+    <% end %>
+  </ul>
+
+</main>

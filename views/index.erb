@@ -1,0 +1,85 @@
+<% require_relative '../models/bookmarks.rb' %>
+
+<% require_relative '../models/user.rb' %>
+
+<% require_relative '../models/admins.rb' %>
+
+<% require_relative '../app/helper/auth.rb' %>
+
+<main>
+  <div id = "searchBar">
+    <form method = "get" action="/s">
+      <input name = "q" type = "text" placeholder = "Search">
+      <button type="submit" class="button4"><i class="material-icons">search</i></button>
+      <button class="button4" id="newBookmark"><a href="/create_bookmark">Create bookmark</a></button>
+    </form>
+  </div>
+  <br />
+    
+
+  <table>
+    <tr>
+      <th>Title</th>
+      <th>Created by</th>
+      <th>Date created</th>
+      <%= session[:user].nil? ? "" : '<th>Favorite</th>' %>
+    </tr>
+    <% page = params[:page].nil? ? 1 : params[:page].to_i # get the current page
+    bookmarks = Bookmark.selectRecent(page) %>
+  <% # get favorite %>
+  <% if not session[:user].nil?
+       favorites = User.listFavorite(session[:user][:id])
+  end %>
+  <% if not bookmarks.nil? %>
+    <% bookmarks.each do |bookmark| %>
+    <tr>
+    <% # Skip the current bookmark if it's private and the user is not logged in: %>
+    <% next if (session[:user] == nil && bookmark[:pub] == 1)%>
+    <td><a href="/details?id=<%=bookmark[:id]%>"><%= bookmark[:title] %></a></td>
+    <% bookmark[:created_by_name] = User.findName(bookmark[:created_by]) # Get username from id %>
+    <td><a href="/profile?uid=<%=bookmark[:created_by]%>"><%= bookmark[:created_by_name] %></a></td>
+    <td><%= bookmark[:date_created] %></td>        
+    <% if not session[:user].nil? %>
+      <td>
+      <form method="post" action="/favorite">
+        <input type="text" name="bid" value="<%= bookmark[:id] %>" hidden>
+        <button type="submit" class="favourite">
+          <i class="material-icons" style="color:red;">
+            <%= favorites.include?(bookmark[:id])?"favorite":"favorite_border" %>
+          </i>
+        </button>
+      </form>
+      </td>
+    <% end %>
+    </tr>
+  <% end %>
+  <% end %>
+  </table>
+
+  <% # Get the total number of pages %>
+  <% totalPages = (Bookmark.countBookmark/20).ceil %>
+  <ul class="page_counter">
+    <% if page != 1 %>
+      <li><a href="/">&laquo;</a></li>
+      <li><a href="/?page=<%= page-1 %>">&lsaquo;</a></li>
+    <% end %>
+    <% if page >= 3 %>
+      <li><a href="/?page=<%= page-2 %>"><%= page-2 %></a></li>
+    <% end %>
+    <% if page >=2 %>
+      <li><a href="/?page=<%= page-1 %>"><%= page-1 %></a></li>
+    <% end %>
+    <li id="current"><a href="#"><%= page %></a></li>
+    <% if totalPages - page >= 1 %>
+      <li><a href="/?page=<%= page+1 %>"><%= page+1 %></a></li>
+    <% end %>
+    <% if totalPages - page >= 2 %>
+      <li><a href="/?page=<%= page+2 %>"><%= page+2 %></a></li>
+    <% end %>
+    <% if totalPages - page >= 1 %>
+      <li><a href="/?page=<%= page+1 %>">&rsaquo;</a></li>
+      <li><a href="/?page=<%= totalPages %>">&raquo;</a></li>
+    <% end %>
+  </ul>
+
+</main>

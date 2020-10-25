@@ -1,0 +1,57 @@
+CREATE TABLE user (
+user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+firstname TEXT NOT NULL,
+lastname TEXT NOT NULL,
+department INTEGER REFERENCES department(department_id),
+date_joined TEXT NOT NULL,
+suspended INTEGER NOT NULL CHECK (suspended IN (0,1))
+);
+
+CREATE TABLE sqlite_sequence(name,seq);
+
+CREATE TABLE department (
+department_id INTEGER PRIMARY KEY AUTOINCREMENT,
+department TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE bookmark (
+bookmark_id INTEGER PRIMARY KEY AUTOINCREMENT,
+title TEXT NOT NULL,
+description TEXT,
+created_by INTEGER NOT NULL REFERENCES user (user_id),
+date_created TEXT NOT NULL,
+url TEXT NOT NULL,
+public INTEGER NOT NULL CHECK (public IN (0,1))
+);
+
+CREATE TABLE user_favorite (
+bookmark_id INTEGER NOT NULL REFERENCES bookmark (bookmark_id),
+user_id INT NOT NULL REFERENCES user (user_id)
+);
+
+CREATE TABLE tag (
+tag_id INTEGER PRIMARY KEY AUTOINCREMENT,
+tag_name TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE bookmark_tag (
+bookmark_id INTEGER NOT NULL REFERENCES bookmark (bookmark_id),
+tag_id INTEGER NOT NULL REFERENCES tag (tag_id)
+);
+
+CREATE TABLE vote (
+bookmark_id INTEGER PRIMARY KEY REFERENCES bookmark (bookmark_id),
+upvote INTEGER DEFAULT 0 NOT NULL,
+downvote INTEGER DEFAULT 0 NOT NULL
+);
+
+CREATE TABLE user_password (
+user_id INTEGER PRIMARY KEY REFERENCES user (user_id),
+password TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS "user_email" (
+user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+email TEXT NOT NULL UNIQUE
+);
+

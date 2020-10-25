@@ -1,0 +1,29 @@
+<% require_relative '../models/user.rb' %>
+<% require_relative '../models/admins.rb' %>
+<% require_relative '../models/department_info.rb' %>
+<% # Get previous info %>
+<% user = User.findDetail(params[:uid])[0] %>
+<% departments = Department.allDepartment %>
+<main>
+  <form action="/update_profile" method="post">
+    <label>First name:</label>
+    <input type="text" name="fname" value="<%= user[:firstname].to_s %>">
+    <label>Last name:</label>
+    <input name="lname" type="text" value="<%= user[:lastname] %>">
+    <label>Department</label>
+    <select name="department">
+    <% departments.each do |department| %>
+      <option value="<%= department[0] %>" <%= department[1].eql?(user[:department])?"selected":""%>><%= department[1] %></option>
+    <% end %>
+    </select>
+    <label>Email</label>
+    <input type="email" name="em" value="<%=user[:email]%>">
+    <label>Suspended</label>
+    <input type="checkbox" name="suspended" <%= user[:suspended].to_i == 0?"":"checked" %>>
+    <label>Admin</label>
+    <input type="checkbox" name="admin" <%= (Admin.search(params[:uid])).length == 0?"":"checked" %>>
+    <label>Submit</label>
+    <input type="submit" value="Update"></input>
+    <input type="text" value="<%= params[:uid] %>" name="uid" hidden>
+  </form>
+</main>

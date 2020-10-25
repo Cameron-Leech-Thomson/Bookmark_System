@@ -1,0 +1,33 @@
+<main>
+  <h1>My favorite</h1>
+  <table>
+    <tr>
+      <th>Title</th>
+      <th>Created by</th>
+      <th>Date created</th>
+      <th>Favorite</th>
+    </tr>
+    <% # get favorite bookmarks %>
+    <% bookmarks = User.listFavoriteDetail(session[:user][:id]) %>
+    <% if not bookmarks.nil? %>
+      <% bookmarks.each do |bookmark| %>
+      <tr>
+      <td><a href="/details?id=<%=bookmark[:id]%>"><%= bookmark[:title] %></a></td>
+      <% bookmark[:created_by_name] = User.findName(bookmark[:created_by]) # Get username from id %>
+      <td><a href="/profile?uid=<%=bookmark[:created_by]%>"><%= bookmark[:created_by_name] %></a></td>
+      <td><%= bookmark[:date_created] %></td>
+      <% if not session[:user].nil? %>
+        <td>
+        <form method="post" action="/favorite">
+          <input type="text" name="bid" value="<%= bookmark[:id] %>" hidden>
+          <button type="submit">
+            <i class="material-icons" style="color:red;">favorite</i>
+          </button>
+        </form>
+        </td>
+      <% end %>
+      </tr>
+    <% end %>
+    <% end %>
+  </table>
+</main>

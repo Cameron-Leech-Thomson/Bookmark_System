@@ -1,0 +1,18 @@
+.tags {
+    display: inline-block;
+    border-radius: 3px;
+    padding: 5px;
+}
+
+main {
+    display: inline-block;
+    vertical-align:top;
+}
+
+.comments {
+    flex: 1;
+}
+
+.details {
+    flex: 1;
+}

@@ -1,0 +1,65 @@
+git pull<% require_relative '../models/user.rb' %>
+<% require_relative '../models/tag.rb' %>
+<% require_relative '../models/comments.rb' %>
+
+<% # get favorite %>
+<% if not session[:user].nil?
+     favorites = User.listFavorite(session[:user][:id])
+end %>
+<main>
+  <div class = "details">    
+  <h1>
+    <a href="http://<%= @bookmark[:url] %>" target="_blank"><%= @bookmark[:title] %></a>
+    <% if not session[:user].nil? %>
+      <form method="post" action="/favorite">
+        <input type="text" name="bid" value="<%= params[:id] %>" hidden>
+        <button type="submit" class="favourite">
+          <i class="material-icons" style="color:red;">
+            <%= favorites.include?(params[:id])?"favorite":"favorite_border" %>
+          </i>
+        </button>
+      </form>
+    <% end %>
+  </h1>
+    <% # List tags if there is any %>
+    <% tags = Tag.findRelatedTags(params[:id]) %>
+    <% if tags.length != 0 %>
+      <% tags.each do |tag| %>
+        <div class="tags" style="background-color: rgb(<%= rand(60) + 180 %>,<%= rand(60) + 180 %>,<%= rand(60) + 180 %>);"><%= Tag.findName(tag) %></div>
+      <% end %>
+    <% end %>
+  <h2>Description</h2>
+  <p><%= @bookmark[:description] %></p>
+  <h2>Create by</h2>
+  <p><a href="/profile?uid=<%= @bookmark[:created_by] %>"><%= User.findName(@bookmark[:created_by]) %></a></p>
+  <h2>Date created</h2>
+  <p><%= @bookmark[:date_created] %></p><br>
+  <p><a href="/confirmDelete?id=<%=@bookmark[:id]%>">Delete Bookmark</a></p><br>
+  <p><a href="/update_bookmark?id=<%=@bookmark[:id]%>">Update bookmark</a></p>
+  <p id = "msg"><%= @message %></p>   
+  </div>
+    
+    
+   <aside class = "comments">
+     <h2>Comments:</h2>
+     <% # Load all previous comments: %>
+     <% comments = Comment.findRelatedComments(params[:id]) %>
+     <% if comments.length != 0 %>
+       <% comments.each do |comment| %>
+       <p><%= Comment.formatResult(Comment.findName(comment)) %>    <a href = "/deleteComment?id=<%= comment %>">Delete Comment?</a></p><br>
+       <%end%>
+     <%end%>
+    
+     <% # Add a new comment: %>
+     <form action = "/details" method = "post" class = "comment">
+         <label for = "comment">Comment:</label>
+         <input type = "text" id = "comment" name = "comment">
+         <input hidden type = "text" id = "bookmarkID" name = "bookmarkID" value = "<%= @bookmark[:id] %>">
+         <input type = "submit" class = "button4" id = "comment">
+       </form>
+    
+   </aside> 
+    
+</main>
+
+<link rel = "stylesheet" href = "./style/bookmark_detail.css">

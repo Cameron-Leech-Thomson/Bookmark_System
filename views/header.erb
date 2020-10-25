@@ -1,0 +1,40 @@
+<% # Deal with user button on the top right of the screen %>
+<% # user_button = session[:user] == nil ? 'Login' : session[:user][:name] %>
+<% # address = session[:user] == nil ? '/login' : '/profile' %>
+<% if session[:user] == nil 
+     user_button = '<li><a href="/login">Login</a>' 
+else
+  user_button = '<li id="dropbutton"><a>'+session[:user][:name]+' <i class="down"></i></a>'
+end %>
+<!DOCTYPE html> 
+<html> 
+  <head>
+    <link href="style/index.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script src="scripts/confirmationwindow.js"></script>
+    <% if @css then %>
+      <% @css.each do |address| %>
+        <link href="style/<%= address %>.css" rel="stylesheet" type="text/css" />
+      <% end %>
+      <% end %>
+        <title><%= @title %></title> 
+  </head> 
+  <body>
+    <div id="wrapper">
+      <nav>
+        <h1><a href="/">Example Inc.</a></h1>
+        <ul>
+          <li><a href="/">Bookmarks</a></li>
+          <li><a href="/employees">Employees</a></li>
+          <li><a href="/about">About</a></li>
+          <%= user_button %>
+          <div id="dropdown">
+            <% if !session[:user].nil? %>
+              <a href="/profile?uid=<%= session[:user][:id] %>">My profile</a>
+          <% end %>
+          <a href="/favourite">My favourite</a>
+          <a href="/logout">Logout</a>
+          </div>
+        </ul>
+      </nav>
+

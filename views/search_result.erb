@@ -1,0 +1,21 @@
+<% require_relative '../models/bookmarks.rb' %>
+<% require_relative '../models/user.rb' %>
+<main>
+  <div id = "searchBar">
+    <form method = "get" action="/s">
+      <input name = "q" type = "text" value="<%= params[:q] %>">
+          <button type="submit" class="button4"><i class="material-icons">search</i></button>
+    </form>
+  </div>
+  <% # get the result from database %>
+  <% bookmarks = Bookmark.fuzzySearch(params[:q]) %>
+  <% bookmarks.each do |bookmark| %>
+    <div>
+      <h3><a href="/details?id=<%=bookmark[:id] %>"><%= bookmark[:title] %></a></h3>
+      <p><%= bookmark[:description] %></p>
+      <a href="http://<%= bookmark[:url] %>" target="_blank"><%= bookmark[:url] %></a>
+      <a href="/profile?uid=<%= bookmark[:created_by] %>"><%= bookmark[:created_by_name] %></a>
+      <p><%= bookmark[:date_created] %></p>
+    </div>
+    <hr>
+  <% end %>

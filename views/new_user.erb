@@ -1,0 +1,35 @@
+<% require_relative '../models/department_info.rb' %>
+<main>
+    <div class="loginBlock">
+        <form action="/new_user" method="post" class="new_user"id="test">
+            <p>
+                <label>Create account:</label>
+                <input type="text" name="fname" placeholder="First Name">
+                <input type="text" name="lname" placeholder="Last Name">
+            </p>
+            <p>
+                <label>Department:</label>
+                <select name="dp">
+                <% departments = Department.allDepartment %>
+                <% departments.each do |department| %>
+                    <option value="<%= department[0] %>"><%= department[1] %></option>
+                <% end %>
+                </select>
+            </p>
+            <p>
+                <label> Date of joining us </label>
+                <input type="date" name="date_joined">
+            </p>
+            <p>
+                <label>Credentials:</label>
+                <input type="email" name="em" placeholder="Email">
+                <input type="password" name="pwd" placeholder="password">
+            </p> <br />
+            <p>
+            <input type="hidden" value="0" name="suspended"> 
+            <input type="submit" id = "button3" value="Create User">
+            </p>
+            <p><%= @message %></p>
+        </form>
+    </div>
+</main>

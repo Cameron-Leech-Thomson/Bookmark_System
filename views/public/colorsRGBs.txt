@@ -1,0 +1,5 @@
+white: rgb(225, 211, 210);
+light blue: rgb(93, 140, 170);
+dark blue: rgb(49, 73, 107);
+red: rgb(203, 13, 13);
+dark: rgb(6, 13, 20);

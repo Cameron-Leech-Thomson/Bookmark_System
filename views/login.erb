@@ -1,0 +1,27 @@
+        <main>
+            <div class="loginBlock">
+            <form method="post" id="test" action="/login">
+                <p>
+                    <label for="username">E-mail address: </label>
+                    <br />
+                    <input type="text" name="em">
+                </p>
+                <p>
+                    <label for="password">Password: </label>
+                <br />
+                    <input type="password" name="pwd">
+                </p>
+                <br />
+                <p>
+                    <input type="submit" id = "button1" value="Login">    
+                    <input type="reset" id = "button2">
+                </p>
+                <br />
+                <p>Not a user? <a href="/new_user" class="links">Create new user</a></p>
+                <br />
+                <p id="error_wrong_login"><%= @message %></p>
+            </form>
+            
+            </div>
+            
+        </main>
